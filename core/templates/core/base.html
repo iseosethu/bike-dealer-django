@@ -1,16 +1,91 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>{% block title %}Bike Dealer{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Add this to your existing styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #86b7fe;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .errorlist {
+            color: #dc3545;
+            padding-left: 0;
+            list-style: none;
+            margin-top: 0.25rem;
+            font-size: 0.875em;
+        }
+
+        .navbar-nav .nav-item {
+            margin-left: 10px;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-badge .role-badge {
+            font-size: 0.7rem;
+            margin-left: 5px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .customer-badge {
+            background-color: #0d6efd;
+        }
+
+        .mechanic-badge {
+            background-color: #198754;
+        }
+
+        .admin-badge {
+            background-color: #dc3545;
+        }
+    </style>
 </head>
+
 <body>
     <!-- Header -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">Bike Dealer</a>
-            <div class="collapse navbar-collapse">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">Who We Are</a></li>
@@ -18,6 +93,50 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'branches' %}">Branches</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'book_service' %}">Book a Service</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'products:list' %}">Spareparts</a></li>
+                </ul>
+
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle user-badge" href="#" id="userDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-1"></i>
+                            {{ user.username }}
+                            <span class="role-badge 
+                                    {% if user.role == 'C' %}customer-badge
+                                    {% elif user.role == 'M' %}mechanic-badge
+                                    {% elif user.role == 'A' %}admin-badge
+                                    {% endif %}">
+                                {% if user.role == 'C' %}Customer
+                                {% elif user.role == 'M' %}Mechanic
+                                {% elif user.role == 'A' %}Admin
+                                {% endif %}
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'profile' %}"><i
+                                        class="fas fa-user-circle me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'profile_edit' %}"><i
+                                        class="fas fa-edit me-2"></i>Edit Profile</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            {% if user.role == 'A' %}
+                            <li><a class="dropdown-item" href="/admin/"><i class="fas fa-cog me-2"></i>Admin Panel</a>
+                            </li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{% url 'logout' %}"><i
+                                        class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i> Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'signup' %}"><i class="fas fa-user-plus me-1"></i> Sign Up</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -43,7 +162,9 @@
             </div>
         </div>
     </footer>
-    
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

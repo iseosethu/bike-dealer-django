@@ -1,0 +1,57 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Your Profile</h2>
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <i class="fas fa-user-circle fa-5x mb-3"></i>
+                        <h4>{{ profile.username }}</h4>
+                        <span class="badge 
+                            {% if profile.role == 'C' %}bg-primary
+                            {% elif profile.role == 'M' %}bg-success
+                            {% elif profile.role == 'A' %}bg-danger
+                            {% endif %}">
+                            {% if profile.role == 'C' %}Customer
+                            {% elif profile.role == 'M' %}Mechanic
+                            {% elif profile.role == 'A' %}Admin
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="col-md-9">
+                    <dl class="row">
+                        <dt class="col-sm-3">Email</dt>
+                        <dd class="col-sm-9">{{ profile.email }}</dd>
+                        
+                        <dt class="col-sm-3">Phone</dt>
+                        <dd class="col-sm-9">{{ profile.phone|default:"Not provided" }}</dd>
+                        
+                        <dt class="col-sm-3">Address</dt>
+                        <dd class="col-sm-9">{{ profile.address|default:"Not provided" }}</dd>
+                        
+                        <dt class="col-sm-3">Date Joined</dt>
+                        <dd class="col-sm-9">{{ profile.date_joined|date:"F j, Y" }}</dd>
+                    </dl>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'profile_edit' %}" class="btn btn-primary">
+                            <i class="fas fa-edit me-1"></i> Edit Profile
+                        </a>
+                        <a href="{% url 'password_change' %}" class="btn btn-secondary ms-2">
+                            <i class="fas fa-key me-1"></i> Change Password
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Additional sections for orders/services can be added here -->
+</div>
+{% endblock %}
